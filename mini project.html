@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>South Indian Movie Search</title>
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+}
+body{
+background:linear-gradient(135deg,#0f172a,#020617);
+color:white;
+min-height:100vh;
+}
+header{
+padding:25px;
+text-align:center;
+background:#1e293b;
+}
+header h1{
+font-size:42px;
+color:#facc15;
+}
+.search-box{
+margin-top:20px;
+display:flex;
+justify-content:center;
+}
+
+.search-box input{
+width:400px;
+padding:14px;
+border:none;
+border-radius:10px;
+font-size:16px;
+}
+
+.movies{
+padding:30px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:25px;
+}
+
+.card{
+background:#1e293b;
+border-radius:15px;
+overflow:hidden;
+transition:.4s;
+box-shadow:0 0 15px rgba(0,0,0,.3);
+}
+
+.card:hover{
+transform:translateY(-10px);
+}
+
+.card img{
+width:100%;
+height:350px;
+object-fit:cover;
+}
+
+.info{
+padding:15px;
+}
+
+.info h2{
+font-size:20px;
+margin-bottom:10px;
+}
+
+.lang{
+background:#facc15;
+color:black;
+padding:5px 10px;
+border-radius:20px;
+display:inline-block;
+font-size:12px;
+font-weight:bold;
+margin-bottom:10px;
+}
+
+.rating{
+color:#22c55e;
+font-weight:bold;
+}
+
+</style>
+</head>
+<body>
+
+<header>
+<h1>🎬 South Movie Search Engine</h1>
+
+<div class="search-box">
+<input
+type="text"
+id="search"
+placeholder="Search Telugu or Tamil Movies..."
+onkeyup="searchMovie()">
+</div>
+
+</header>
+
+<div class="movies" id="movies"></div>
+
+<script>
+
+const movies = [
+
+{
+title:"Sita Ramam",
+lang:"Telugu",
+rating:"8.5",
+poster:"https://bestsimilar.com/img/movie/thumb/ad/80174.jpg"
+},
+
+{
+title:"RRR",
+lang:"Telugu",
+rating:"8.9",
+poster:"https://upload.wikimedia.org/wikipedia/en/d/d7/RRR_Poster.jpg"
+},
+
+{
+title:"Annamayya",
+lang:"Telugu",
+rating:"9.1",
+poster:"https://m.media-amazon.com/images/M/MV5BZDJkOTQ2NTQtOGQ4My00N2IxLThiYTItMjk0NmNkZDcxOTNkXkEyXkFqcGc@._V1_QL75_UX248_.jpg"
+},
+
+{
+title:"Kalki 2898 AD",
+lang:"Telugu",
+rating:"8.3",
+poster:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1KXWpg8dDxiGWDBwoqMIbLnrzAQKdEUHxNQ&s"
+},
+
+{
+title:"Salaar",
+lang:"Telugu",
+rating:"8.2",
+poster:"https://m.media-amazon.com/images/M/MV5BNTU0ZjYxOWItOWViMC00YWVlLWJlMGUtZjc1YWU0NTlhY2ZhXkEyXkFqcGc@._V1_.jpg"
+},
+
+{
+title:"Leo",
+lang:"Tamil",
+rating:"8.0",
+poster:"https://preview.redd.it/leo-2023-review-forum-thread-spoilers-must-be-tagged-v0-be5vpks10xob1.jpg?width=1348&format=pjpg&auto=webp&s=a6987ed21bf19da051d6c37c461b476d40b897b2"
+},
+
+{
+title:"Bahubali",
+lang:"Telugu",
+rating:"8.4",
+poster:"https://i.pinimg.com/236x/73/91/44/739144c63b5bdcb44d59a4b40704faf6.jpg"
+},
+
+{
+title:"Master",
+lang:"Tamil",
+rating:"7.9",
+poster:"https://i.pinimg.com/736x/df/85/bd/df85bd17ddadc7b1acb4eefa2c902925.jpg"
+},
+
+{
+title:"Jailer",
+lang:"Tamil",
+rating:"8.1",
+poster:"https://i.pinimg.com/originals/ab/56/6b/ab566bf15245c7071d41c30af55fcabb.jpg"
+},
+
+{
+title:"Thunivu",
+lang:"Tamil",
+rating:"7.7",
+poster:"https://www.telugu360.com/wp-content/uploads/2019/08/Saaho-5.jpg"
+}
+
+];
+
+const movieContainer =
+document.getElementById("movies");
+
+function displayMovies(list){
+
+movieContainer.innerHTML="";
+
+list.forEach(movie=>{
+
+movieContainer.innerHTML += `
+
+<div class="card">
+
+<img src="${movie.poster}">
+
+<div class="info">
+
+<span class="lang">
+${movie.lang}
+</span>
+
+<h2>${movie.title}</h2>
+
+<p class="rating">
+⭐ ${movie.rating}/10
+</p>
+</div>
+</div>
+`;
+});
+}
+displayMovies(movies);
+
+function searchMovie(){
+
+const search =
+document.getElementById("search")
+.value.toLowerCase();
+
+const filtered =
+movies.filter(movie =>
+movie.title.toLowerCase()
+.includes(search)
+);
+displayMovies(filtered);
+}
+</script>
+</body>
+</html>
