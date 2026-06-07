@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Mood Tracker</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#f4f7fc;
+    margin:0;
+    padding:20px;
+}
+
+.container{
+    max-width:900px;
+    margin:auto;
+}
+
+h1{
+    text-align:center;
+    color:#333;
+}
+
+.mood-box{
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 2px 10px rgba(0,0,0,0.1);
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.emoji{
+    font-size:40px;
+    cursor:pointer;
+    margin:10px;
+    transition:0.3s;
+}
+
+.emoji:hover{
+    transform:scale(1.2);
+}
+
+.grid-container{
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 2px 10px rgba(0,0,0,0.1);
+    margin-bottom:20px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:10px;
+}
+
+.day{
+    background:#e8f0ff;
+    min-height:70px;
+    border-radius:10px;
+    text-align:center;
+    padding:5px;
+}
+
+.day-number{
+    font-weight:bold;
+}
+
+.mood{
+    font-size:24px;
+    margin-top:5px;
+}
+
+.summary{
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 2px 10px rgba(0,0,0,0.1);
+}
+
+.summary-item{
+    font-size:20px;
+    margin:10px 0;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>😊 Daily Mood Tracker</h1>
+
+<div class="mood-box">
+<h2>Select Today's Mood</h2>
+
+<span class="emoji" onclick="saveMood('😍')">😍</span>
+<span class="emoji" onclick="saveMood('😊')">😊</span>
+<span class="emoji" onclick="saveMood('😐')">😐</span>
+<span class="emoji" onclick="saveMood('😔')">😔</span>
+<span class="emoji" onclick="saveMood('😡')">😡</span>
+<span class="emoji" onclick="saveMood('🤪')">🤪</span>
+<span class="emoji" onclick="saveMood('🥳')">🥳</span>
+<span class="emoji" onclick="saveMood('🫩')">🫩</span>
+<span class="emoji" onclick="saveMood('🫠')">🫠</span>
+<span class="emoji" onclick="saveMood('🤗')">🤗</span>
+<span class="emoji" onclick="saveMood('😂')">😂</span>
+<p id="message"></p>
+</div>
+
+<div class="grid-container">
+<h2>Monthly Mood Calendar</h2>
+<div id="calendar" class="grid"></div>
+</div>
+
+<div class="summary">
+<h2>Monthly Mood Statistics</h2>
+<div id="stats"></div>
+</div>
+
+</div>
+
+<script>
+
+function getMoodData(){
+    return JSON.parse(localStorage.getItem("moods")) || {};
+}
+
+function saveMood(emoji){
+
+    const today = new Date();
+    const dateKey = today.toISOString().split('T')[0];
+
+    let moods = getMoodData();
+
+    moods[dateKey] = emoji;
+
+    localStorage.setItem(
+        "moods",
+        JSON.stringify(moods)
+    );
+
+    document.getElementById("message").innerHTML =
+        "Mood Saved: " + emoji;
+
+    loadCalendar();
+    loadStats();
+}
+
+function loadCalendar(){
+
+    const calendar =
+        document.getElementById("calendar");
+
+    calendar.innerHTML = "";
+
+    const moods = getMoodData();
+
+    const now = new Date();
+
+    const year = now.getFullYear();
+    const month = now.getMonth();
+
+    const daysInMonth =
+        new Date(year, month + 1, 0).getDate();
+
+    for(let day=1; day<=daysInMonth; day++){
+
+        const dateString =
+            year + "-" +
+            String(month+1).padStart(2,'0') + "-" +
+            String(day).padStart(2,'0');
+
+        const mood = moods[dateString] || "";
+
+        const cell =
+            document.createElement("div");
+
+        cell.className = "day";
+
+        cell.innerHTML = `
+            <div class="day-number">${day}</div>
+            <div class="mood">${mood}</div>
+        `;
+
+        calendar.appendChild(cell);
+    }
+}
+
+function loadStats(){
+
+    const statsDiv =
+        document.getElementById("stats");
+
+    statsDiv.innerHTML = "";
+
+    const moods = getMoodData();
+
+    const counts = {};
+
+    const now = new Date();
+
+    const month =
+        String(now.getMonth()+1).padStart(2,'0');
+
+    const year =
+        now.getFullYear().toString();
+
+    Object.keys(moods).forEach(date=>{
+
+        if(date.startsWith(year+"-"+month)){
+
+            const emoji = moods[date];
+
+            counts[emoji] =
+                (counts[emoji] || 0) + 1;
+        }
+    });
+
+    for(const emoji in counts){
+
+        const div =
+            document.createElement("div");
+
+        div.className = "summary-item";
+
+        div.innerHTML =
+            emoji + " : " +
+            counts[emoji] + " day(s)";
+
+        statsDiv.appendChild(div);
+    }
+
+    if(Object.keys(counts).length===0){
+        statsDiv.innerHTML =
+            "No mood data available.";
+    }
+}
+
+loadCalendar();
+loadStats();
+
+</script>
+
+</body>
+</html>
